@@ -1,4 +1,4 @@
-package com.serverless;
+package com.serverless.model;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
