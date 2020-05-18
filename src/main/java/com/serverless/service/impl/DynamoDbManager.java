@@ -22,7 +22,7 @@ public class DynamoDbManager<T> implements DbManager<T> {
         this.table = table;
     }
 
-    public T getItemById(final String id) {
+    public T getById(final String id) {
         final Key key = Key.builder()
                 .partitionValue(id)
                 .build();
@@ -33,11 +33,12 @@ public class DynamoDbManager<T> implements DbManager<T> {
         this.table.putItem(object);
     }
 
-    public T delete(final String id) { ;
+    public boolean delete(final String id) { ;
         final Key key = Key.builder()
                 .partitionValue(id)
                 .build();
-        return this.table.deleteItem(deleteItemRequestBuilder -> deleteItemRequestBuilder.key(key));
+        this.table.deleteItem(deleteItemRequestBuilder -> deleteItemRequestBuilder.key(key));
+        return true;
     }
 
     public List<T> scan() { ;
@@ -59,7 +60,7 @@ public class DynamoDbManager<T> implements DbManager<T> {
                 .collect(Collectors.toList());
     }
 
-    public T update(final T object) { ;
+    public T update(final T object) {
         return this.table.updateItem(object);
     }
 }
