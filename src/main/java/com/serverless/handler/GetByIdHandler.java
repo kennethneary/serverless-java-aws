@@ -21,6 +21,7 @@ public class GetByIdHandler implements RequestHandler<APIGatewayProxyRequestEven
     @Override
     public ApiGatewayResponse handleRequest(APIGatewayProxyRequestEvent input, Context context) {
         try {
+            LOG.error("GetByIdHandler...");
             final String id = input.getPathParameters().get("id");
             final Product product = this.productManager.getProduct(id);
             final Response response = Response.builder().data(product).build();

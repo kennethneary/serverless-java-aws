@@ -21,6 +21,7 @@ public class UpdateHandler implements RequestHandler<APIGatewayProxyRequestEvent
     @Override
     public ApiGatewayResponse handleRequest(APIGatewayProxyRequestEvent input, Context context) {
         try {
+            LOG.error("UpdateHandler...");
             final String id = input.getPathParameters().get("id");
             final Product product = Utils.getObject(input.getBody(), Product.class);
             this.productManager.updateProduct(id, product);

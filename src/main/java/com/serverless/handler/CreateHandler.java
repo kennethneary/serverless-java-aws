@@ -25,9 +25,9 @@ public class CreateHandler implements RequestHandler<APIGatewayProxyRequestEvent
     @Override
     public ApiGatewayResponse handleRequest(APIGatewayProxyRequestEvent input, Context context) {
         try {
+            LOG.error("CreateHandler...");
             final Product product = Utils.getObject(input.getBody(), Product.class);
             final String id = this.productManager.saveProduct(product);
-
             final Map<String, Object> data = ImmutableMap.<String, Object>builder()
                     .put("id", id)
                     .build();
