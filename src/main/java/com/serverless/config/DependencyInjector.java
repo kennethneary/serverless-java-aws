@@ -9,6 +9,7 @@ import com.serverless.service.ProductManager;
 import com.serverless.service.impl.DynamoDbManager;
 import com.serverless.service.impl.ObjectStorageService;
 import com.serverless.service.impl.ProductService;
+import software.amazon.awssdk.services.s3.S3Client;
 
 public class DependencyInjector extends AbstractModule {
 
@@ -20,5 +21,6 @@ public class DependencyInjector extends AbstractModule {
         bind(ProductManager.class).to(ProductService.class);
         bind(ObjectStorageManager.class).to(ObjectStorageService.class);
         bind(ProductManager.class).to(ProductService.class);
+//        bind(S3Client.class).to(ProductService.class);
     }
 }

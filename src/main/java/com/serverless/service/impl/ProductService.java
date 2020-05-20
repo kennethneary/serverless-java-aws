@@ -37,7 +37,8 @@ public class ProductService implements ProductManager {
     }
 
     public boolean deleteProduct(final String id) {
-        return this.db.delete(id);
+        this.db.delete(id);
+        return this.osm.deleteObject(Constants.BUCKET_NAME.getValue(), id);
     }
 
     public Product updateProduct(final String id, final Product product) {
@@ -48,10 +49,12 @@ public class ProductService implements ProductManager {
     }
 
     public List<Product> queryProduct(final String id) {
+        // do not return s3 content. get client to call specific item for performance
         return this.db.query(id);
     }
 
     public List<Product> getAllProducts() {
+        // do not return s3 content. get client to call specific item for performance
         return this.db.scan();
     }
 }
