@@ -1,22 +1,28 @@
 package com.serverless.service.impl;
 
+import com.google.inject.Inject;
 import com.serverless.Constants;
 import com.serverless.model.Content;
 import com.serverless.model.Product;
 import com.serverless.service.DbManager;
 import com.serverless.service.ObjectStorageManager;
 import com.serverless.service.ProductManager;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
-import static com.serverless.config.DependencyInjector.injector;
-
+@Getter
+@Setter
 public class ProductService implements ProductManager {
 
-    private ObjectStorageManager osm = injector.getInstance(ObjectStorageManager.class);
-    private DbManager<Product> db = injector.getInstance(DbManager.class);
+    @Inject
+    private ObjectStorageManager osm;
+
+    @Inject
+    private DbManager<Product> db;
 
     public String saveProduct(final Product product) {
         final  String id = UUID.randomUUID().toString();

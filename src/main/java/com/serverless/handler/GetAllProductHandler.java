@@ -10,27 +10,28 @@ import com.serverless.service.ProductManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import static com.serverless.config.DependencyInjector.injector;
+import java.util.List;
 
-public class GetByIdHandler implements RequestHandler<APIGatewayProxyRequestEvent, ApiGatewayResponse> {
+import static com.serverless.config.AppModule.injector;
 
-    private static final Logger LOG = LogManager.getLogger(GetByIdHandler.class);
+public class GetAllProductHandler implements RequestHandler<APIGatewayProxyRequestEvent, ApiGatewayResponse> {
+
+    private static final Logger LOG = LogManager.getLogger(GetAllProductHandler.class);
 
     private ProductManager productManager = injector.getInstance(ProductManager.class);
 
     @Override
-    public ApiGatewayResponse handleRequest(APIGatewayProxyRequestEvent input, Context context) {
+    public ApiGatewayResponse handleRequest(final APIGatewayProxyRequestEvent input, final Context context) {
         try {
-            LOG.error("GetByIdHandler...");
-            final String id = input.getPathParameters().get("id");
-            final Product product = this.productManager.getProduct(id);
-            final Response response = Response.builder().data(product).build();
+            LOG.error("GetAllHandler...");
+            final List<Product> products = this.productManager.getAllProducts();
+            final Response response = Response.builder().data(products).build();
             return ApiGatewayResponse.builder()
-                    .setStatusCode(200)
+                    .setStatusCode(201)
                     .setObjectBody(response)
                     .build();
         } catch (Exception ex) {
-            LOG.error("Error in get by id product: " + ex);
+            LOG.error("Error in get all product: " + ex);
             return ApiGatewayResponse.builder()
                     .setStatusCode(500)
                     .build();

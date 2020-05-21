@@ -1,13 +1,20 @@
-service: aws-java
+service:
+  name: java-serverless-products
 
 custom:
-  productsTableName: 'java-products-${self:provider.stage}'
+  productsTableName: '${self:service.name}-${self:provider.stage}-table'
+  productsBucketName: '${self:service.name}-${self:provider.stage}-table'
 
 provider:
   name: aws
   runtime: java8
   stage: ${opt:stage, 'dev'}
-  region: ${opt:region, 'us-east-1'}
+  region: ${opt:region, 'eu-west-1'}
+  apiKeys:
+    - ${self:service.name}-${self:provider.stage}
+  timeout: 29
+  deploymentBucket:
+    name: ${file(./config.json:deploymentBucket)}
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -18,55 +25,76 @@ provider:
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
       Resource:
-        - { "Fn::GetAtt": ["ProductsDynamoDBTable", "Arn" ] }
+        - !GetAtt: ProductsDynamoDBTable.Arn
+    - Effect: Allow
+        Action:
+          - s3:PutObject
+          - s3:GetObject
+          - s3:DeleteObject
+        Resource:
+          - { "Fn::GetAtt": ["ProductsDynamoDBTable", "Arn" ] }
   environment:
     PRODUCTS_TABLE_NAME: ${self:custom.productsTableName}
+    PRODUCTS_BUCKET_NAME: ${self:custom.productsBucketName}
 
 package:
-  artifact: 'target/${self:service}-${self:provider.stage}.jar'
+  artifact: 'target/${self:service.name}-${self:provider.stage}.jar'
 
 functions:
-  listProducts:
-    handler: com.serverless.ListProductsHandler
+  listAllProducts:
+    handler: com.serverless.GetAllProductHandler
     events:
       - http:
           path: /products
           method: get
-#  getProduct:
-#    handler: com.serverless.GetProductHandler
-#    events:
-#      - http:
-#          path: /products/{id}
-#          method: get
-#  createProduct:
-#    handler: com.serverless.CreateProductHandler
-#    events:
-#      - http:
-#          path: /products
-#          method: post
-#  deleteProduct:
-#    handler: com.serverless.DeleteProductHandler
-#    events:
-#      - http:
-#          path: /products/{id}
-#          method: delete
+          cors: true
+          private: true
+
+  queryProduct:
+    handler: com.serverless.QueryProductHandler
+    events:
+      - http:
+          path: /products/{id}
+          method: post
+          cors: true
+          private: true
+
+  getProductById:
+    handler: com.serverless.GetProductByIdHandler
+    events:
+      - http:
+          path: /products/{id}
+          method: get
+          cors: true
+          private: true
+
+  createProduct:
+    handler: com.serverless.CreateProductHandler
+    events:
+      - http:
+          path: /products
+          method: post
+          cors: true
+          private: true
+
+  updateProduct:
+    handler: com.serverless.UpdateProductHandler
+    events:
+      - http:
+          path: /products/{id}
+          method: put
+          cors: true
+          private: true
+
+  deleteProduct:
+    handler: com.serverless.DeleteProductHandler
+    events:
+      - http:
+          path: /products/{id}
+          method: delete
+          cors: true
+          private: true
 
 resources:
-  Resources:
-    ProductsDynamoDBTable:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        TableName: ${self:custom.productsTableName}
-        AttributeDefinitions:
-          - AttributeName: id
-            AttributeType: S
-          - AttributeName: name
-            AttributeType: S
-        KeySchema:
-          - AttributeName: id
-            KeyType: HASH
-          - AttributeName: name
-            KeyType: RANGE
-        ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 1
+  - ${file(templates/product-table.yml)}
+  - ${file(templates/s3-bucket.yml)}

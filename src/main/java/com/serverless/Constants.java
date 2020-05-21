@@ -1,8 +1,8 @@
 package com.serverless;
 
 public enum  Constants {
-    TABLE_NAME(System.getenv("TABLE_NAME")),
-    BUCKET_NAME(System.getenv("BUCKET_NAME"));
+    TABLE_NAME(System.getenv("PRODUCTS_TABLE_NAME")),
+    BUCKET_NAME(System.getenv("PRODUCTS_BUCKET_NAME"));
 
     private final String value;
 

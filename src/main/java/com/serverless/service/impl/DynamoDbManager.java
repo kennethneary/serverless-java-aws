@@ -1,26 +1,30 @@
 package com.serverless.service.impl;
 
+import com.google.inject.Inject;
+import com.google.inject.name.Named;
 import com.serverless.service.DbManager;
+import lombok.Getter;
+import lombok.Setter;
 import software.amazon.awssdk.enhanced.dynamodb.*;
-import software.amazon.awssdk.enhanced.dynamodb.mapper.BeanTableSchema;
 import software.amazon.awssdk.enhanced.dynamodb.model.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Getter
+@Setter
 public class DynamoDbManager<T> implements DbManager<T> {
 
-    private final DynamoDbTable<T> table;
-    private final Class<T> classType;
-    private final String primaryKey;
+    @Inject
+    private DynamoDbTable<T> table;
 
-    public DynamoDbManager(final String tableName, final Class<T> classType, final String primaryKey) {
-        final DynamoDbEnhancedClient ddbEnhancedClient = DynamoDbEnhancedClient.create();
-        final BeanTableSchema<T> beanTableSchema = TableSchema.fromBean(classType);
-        this.table = ddbEnhancedClient.table(tableName, beanTableSchema);
-        this.classType = classType;
-        this.primaryKey = primaryKey;
-    }
+    @Inject
+    @Named("classType")
+    private Class<T> classType;
+
+    @Inject
+    @Named("primaryKey")
+    private String primaryKey;
 
     public T getById(final String id) {
         final Key key = Key.builder()

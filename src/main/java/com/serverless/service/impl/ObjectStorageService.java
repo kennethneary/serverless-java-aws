@@ -1,7 +1,10 @@
 package com.serverless.service.impl;
 
+import com.google.inject.Inject;
 import com.serverless.model.Content;
 import com.serverless.service.ObjectStorageManager;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.io.IOUtils;
 import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.core.sync.RequestBody;
@@ -14,11 +17,12 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-import static com.serverless.config.DependencyInjector.injector;
-
+@Getter
+@Setter
 public class ObjectStorageService implements ObjectStorageManager {
 
-    private S3Client s3 = injector.getInstance(S3Client.class);
+    @Inject
+    private S3Client s3;
 
     public void saveObject(final String bucketName, final String objectKey, final Content content) {
         final String base64Content = content.getBase64Content();

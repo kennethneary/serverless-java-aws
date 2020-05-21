@@ -4,29 +4,32 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.serverless.model.ApiGatewayResponse;
+import com.serverless.model.Product;
 import com.serverless.service.ProductManager;
+import com.serverless.util.Utils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import static com.serverless.config.DependencyInjector.injector;
+import static com.serverless.config.AppModule.injector;
 
-public class DeleteHandler implements RequestHandler<APIGatewayProxyRequestEvent, ApiGatewayResponse> {
+public class UpdateProductHandler implements RequestHandler<APIGatewayProxyRequestEvent, ApiGatewayResponse> {
 
-    private static final Logger LOG = LogManager.getLogger(DeleteHandler.class);
+    private static final Logger LOG = LogManager.getLogger(UpdateProductHandler.class);
 
     private ProductManager productManager = injector.getInstance(ProductManager.class);
 
     @Override
-    public ApiGatewayResponse handleRequest(APIGatewayProxyRequestEvent input, Context context) {
+    public ApiGatewayResponse handleRequest(final APIGatewayProxyRequestEvent input, final Context context) {
         try {
-            LOG.error("DeleteHandler...");
+            LOG.error("UpdateHandler...");
             final String id = input.getPathParameters().get("id");
-            this.productManager.deleteProduct(id);
+            final Product product = Utils.getObject(input.getBody(), Product.class);
+            this.productManager.updateProduct(id, product);
             return ApiGatewayResponse.builder()
-                    .setStatusCode(200)
+                    .setStatusCode(201)
                     .build();
         } catch (Exception ex) {
-            LOG.error("Error in deleteing product: " + ex);
+            LOG.error("Error in updating product: " + ex);
             return ApiGatewayResponse.builder()
                     .setStatusCode(500)
                     .build();

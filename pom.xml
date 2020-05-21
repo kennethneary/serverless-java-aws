@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.serverless</groupId>
-    <artifactId>java-serverless</artifactId>
+    <artifactId>java-serverless-products</artifactId>
     <packaging>jar</packaging>
     <version>dev</version>
 
@@ -41,6 +41,11 @@
             <artifactId>guice</artifactId>
             <version>4.2.3</version>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.google.dagger</groupId>-->
+<!--            <artifactId>dagger</artifactId>-->
+<!--            <version>2.26</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>software.amazon.awssdk</groupId>
             <artifactId>dynamodb</artifactId>
@@ -137,7 +142,19 @@
                     </dependency>
                 </dependencies>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jdeps-plugin</artifactId>
+                <version>3.1.2</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>jdkinternals</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
-
 </project>
