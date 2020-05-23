@@ -8,3 +8,7 @@ clean:
 
 deploy: build
 	serverless deploy
+
+install: clean
+	npm install
+	mvn install

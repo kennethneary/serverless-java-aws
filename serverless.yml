@@ -25,22 +25,24 @@ provider:
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
       Resource:
-        - { 'Fn::GetAtt': ['ProductsDynamoDBTable', 'Arn' ] }
-    #        - !GetAtt: ProductsDynamoDBTable.Arn
+        - Fn::GetAtt: ['ProductsDynamoDBTable', 'Arn' ]
     - Effect: Allow
       Action:
         - s3:PutObject
         - s3:GetObject
         - s3:DeleteObject
       Resource:
-        - !Sub
-            - '${annnn}/*'
-            - { annnn: { 'Fn::GetAtt': ['ProductsS3Bucket', 'Arn' ] } }
-#        - { 'Fn::GetAtt': ['ProductsS3Bucket', 'Arn' ] }
+        - Fn::Sub:
+          - '#{BUCKET}/*'
+          - BUCKET:
+              Fn::GetAtt: ['ProductsS3Bucket', 'Arn' ]
   environment:
     PRODUCTS_TABLE_NAME: ${self:custom.productsTableName}
     PRODUCTS_TABLE_PRIMARY_ID: id
     PRODUCTS_BUCKET_NAME: ${self:custom.productsBucketName}
+
+plugins:
+  - serverless-cloudformation-sub-variables
 
 package:
   artifact: 'target/${self:service.name}-${self:provider.stage}.jar'

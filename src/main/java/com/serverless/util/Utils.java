@@ -26,23 +26,23 @@ public class Utils {
         return null;
     }
 
-    public static void main(String ...json) {
-//        Product p = getObject("{\n" +
-//                "    \"id\": \"id\",\n" +
-//                "    \"name\": \"john\",\n" +
-//                "    \"price\": \"price\",\n" +
-//                "    \"description\": \"description\",\n" +
-//                "    \"createdDateTime\": \"createdDateTime\",\n" +
-//                "    \"lastUpdatedDateTime\": \"lastUpdatedDateTime\",\n" +
-//                "    \"content\": {\n" +
-//                "        \"base64Content\": \"base64Content\",\n" +
-//                "        \"contentType\": \"contentType\"\n" +
-//                "    }\n" +
-//                "}", Product.class);
-//        System.out.println(p);
-
-        Instant instant = Instant.now();
-        System.out.println(instant.toString());
-
-    }
+//    public static void main(String ...json) {
+////        Product p = getObject("{\n" +
+////                "    \"id\": \"id\",\n" +
+////                "    \"name\": \"john\",\n" +
+////                "    \"price\": \"price\",\n" +
+////                "    \"description\": \"description\",\n" +
+////                "    \"createdDateTime\": \"createdDateTime\",\n" +
+////                "    \"lastUpdatedDateTime\": \"lastUpdatedDateTime\",\n" +
+////                "    \"content\": {\n" +
+////                "        \"base64Content\": \"base64Content\",\n" +
+////                "        \"contentType\": \"contentType\"\n" +
+////                "    }\n" +
+////                "}", Product.class);
+////        System.out.println(p);
+//
+//        Instant instant = Instant.now();
+//        System.out.println(instant.toString());
+//
+//    }
 }

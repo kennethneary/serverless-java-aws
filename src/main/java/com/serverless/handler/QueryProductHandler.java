@@ -1,7 +1,6 @@
 package com.serverless.handler;
 
 import com.amazonaws.services.lambda.runtime.Context;
-import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.serverless.model.ApiGatewayResponse;
 import com.serverless.model.Product;
@@ -14,29 +13,22 @@ import java.util.List;
 
 import static com.serverless.config.AppModule.injector;
 
-public class QueryProductHandler implements RequestHandler<APIGatewayProxyRequestEvent, ApiGatewayResponse> {
+public class QueryProductHandler extends BaseEventHandler {
 
     private static final Logger LOG = LogManager.getLogger(QueryProductHandler.class);
 
-    private ProductManager productManager = injector.getInstance(ProductManager.class);
+    private final ProductManager productManager = injector.getInstance(ProductManager.class);
 
     @Override
-    public ApiGatewayResponse handleRequest(final APIGatewayProxyRequestEvent input, final Context context) {
-        try {
-            LOG.info("QueryHandler...");
-            final String id = input.getPathParameters().get("id");
-            final List<Product> products = this.productManager.queryProduct(id);
-            final Response response = Response.builder().data(products).build();
-            return ApiGatewayResponse.builder()
-                    .setStatusCode(201)
-                    .setObjectBody(response)
-                    .build();
-        } catch (Exception ex) {
-            LOG.error("Error in query product: " + ex);
-            return ApiGatewayResponse.builder()
-                    .setStatusCode(500)
-                    .build();
-        }
+    public ApiGatewayResponse processEvent(final APIGatewayProxyRequestEvent event, final Context context) {
+        LOG.info("QueryHandler...");
+        final String id = event.getPathParameters().get("id");
+        final List<Product> products = this.productManager.queryProduct(id);
+        final Response response = Response.builder().data(products).build();
+        return ApiGatewayResponse.builder()
+                .setStatusCode(201)
+                .setObjectBody(response)
+                .build();
     }
 }
 

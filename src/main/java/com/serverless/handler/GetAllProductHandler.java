@@ -1,7 +1,6 @@
 package com.serverless.handler;
 
 import com.amazonaws.services.lambda.runtime.Context;
-import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
 import com.serverless.model.ApiGatewayResponse;
 import com.serverless.model.Product;
@@ -14,28 +13,21 @@ import java.util.List;
 
 import static com.serverless.config.AppModule.injector;
 
-public class GetAllProductHandler implements RequestHandler<APIGatewayProxyRequestEvent, ApiGatewayResponse> {
+public class GetAllProductHandler extends BaseEventHandler {
 
     private static final Logger LOG = LogManager.getLogger(GetAllProductHandler.class);
 
-    private ProductManager productManager = injector.getInstance(ProductManager.class);
+    private final ProductManager productManager = injector.getInstance(ProductManager.class);
 
     @Override
-    public ApiGatewayResponse handleRequest(final APIGatewayProxyRequestEvent input, final Context context) {
-        try {
-            LOG.info("GetAllHandler...");
-            final List<Product> products = this.productManager.getAllProducts();
-            final Response response = Response.builder().data(products).build();
-            return ApiGatewayResponse.builder()
-                    .setStatusCode(201)
-                    .setObjectBody(response)
-                    .build();
-        } catch (Exception ex) {
-            LOG.error("Error in get all product: " + ex);
-            return ApiGatewayResponse.builder()
-                    .setStatusCode(500)
-                    .build();
-        }
+    public ApiGatewayResponse processEvent(final APIGatewayProxyRequestEvent event, final Context context) {
+        LOG.info("GetAllHandler...");
+        final List<Product> products = this.productManager.getAllProducts();
+        final Response response = Response.builder().data(products).build();
+        return ApiGatewayResponse.builder()
+                .setStatusCode(201)
+                .setObjectBody(response)
+                .build();
     }
 }
 
