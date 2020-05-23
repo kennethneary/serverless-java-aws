@@ -4,12 +4,15 @@ import com.google.inject.Inject;
 import com.google.inject.name.Named;
 import com.serverless.service.DbManager;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import software.amazon.awssdk.enhanced.dynamodb.*;
 import software.amazon.awssdk.enhanced.dynamodb.model.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.serverless.config.AppModule.*;
 
 @Getter
 @Setter
@@ -19,11 +22,11 @@ public class DynamoDbManager<T> implements DbManager<T> {
     private DynamoDbTable<T> table;
 
     @Inject
-    @Named("classType")
+    @Named(DB_CLASS_TYPE)
     private Class<T> classType;
 
     @Inject
-    @Named("primaryKey")
+    @Named(DB_PRIMARY_KEY)
     private String primaryKey;
 
     public T getById(final String id) {

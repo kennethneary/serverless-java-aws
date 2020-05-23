@@ -13,8 +13,8 @@ provider:
   apiKeys:
     - ${self:service.name}-${self:provider.stage}
   timeout: 29
-  deploymentBucket:
-    name: ${file(./config.json:deploymentBucket)}
+  #  deploymentBucket:
+  #    name: ${file(./config.json:deploymentBucket)}
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -25,16 +25,21 @@ provider:
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
       Resource:
-        - !GetAtt: ProductsDynamoDBTable.Arn
+        - { 'Fn::GetAtt': ['ProductsDynamoDBTable', 'Arn' ] }
+    #        - !GetAtt: ProductsDynamoDBTable.Arn
     - Effect: Allow
-        Action:
-          - s3:PutObject
-          - s3:GetObject
-          - s3:DeleteObject
-        Resource:
-          - { "Fn::GetAtt": ["ProductsDynamoDBTable", "Arn" ] }
+      Action:
+        - s3:PutObject
+        - s3:GetObject
+        - s3:DeleteObject
+      Resource:
+        - !Sub
+            - '${annnn}/*'
+            - { annnn: { 'Fn::GetAtt': ['ProductsS3Bucket', 'Arn' ] } }
+#        - { 'Fn::GetAtt': ['ProductsS3Bucket', 'Arn' ] }
   environment:
     PRODUCTS_TABLE_NAME: ${self:custom.productsTableName}
+    PRODUCTS_TABLE_PRIMARY_ID: id
     PRODUCTS_BUCKET_NAME: ${self:custom.productsBucketName}
 
 package:
@@ -42,7 +47,7 @@ package:
 
 functions:
   listAllProducts:
-    handler: com.serverless.GetAllProductHandler
+    handler: com.serverless.handler.GetAllProductHandler
     events:
       - http:
           path: /products
@@ -51,16 +56,16 @@ functions:
           private: true
 
   queryProduct:
-    handler: com.serverless.QueryProductHandler
+    handler: com.serverless.handler.QueryProductHandler
     events:
       - http:
           path: /products/{id}
-          method: post
+          method: get
           cors: true
           private: true
 
   getProductById:
-    handler: com.serverless.GetProductByIdHandler
+    handler: com.serverless.handler.GetProductByIdHandler
     events:
       - http:
           path: /products/{id}
@@ -69,7 +74,7 @@ functions:
           private: true
 
   createProduct:
-    handler: com.serverless.CreateProductHandler
+    handler: com.serverless.handler.CreateProductHandler
     events:
       - http:
           path: /products
@@ -78,7 +83,7 @@ functions:
           private: true
 
   updateProduct:
-    handler: com.serverless.UpdateProductHandler
+    handler: com.serverless.handler.UpdateProductHandler
     events:
       - http:
           path: /products/{id}
@@ -87,7 +92,7 @@ functions:
           private: true
 
   deleteProduct:
-    handler: com.serverless.DeleteProductHandler
+    handler: com.serverless.handler.DeleteProductHandler
     events:
       - http:
           path: /products/{id}

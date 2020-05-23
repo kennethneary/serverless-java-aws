@@ -23,7 +23,7 @@ public class GetAllProductHandler implements RequestHandler<APIGatewayProxyReque
     @Override
     public ApiGatewayResponse handleRequest(final APIGatewayProxyRequestEvent input, final Context context) {
         try {
-            LOG.error("GetAllHandler...");
+            LOG.info("GetAllHandler...");
             final List<Product> products = this.productManager.getAllProducts();
             final Response response = Response.builder().data(products).build();
             return ApiGatewayResponse.builder()

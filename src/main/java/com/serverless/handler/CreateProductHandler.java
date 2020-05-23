@@ -25,8 +25,9 @@ public class CreateProductHandler implements RequestHandler<APIGatewayProxyReque
     @Override
     public ApiGatewayResponse handleRequest(final APIGatewayProxyRequestEvent input, final Context context) {
         try {
-            LOG.error("CreateHandler...");
+            LOG.info("CreateHandler...");
             final Product product = Utils.getObject(input.getBody(), Product.class);
+            LOG.info("CreateHandler after product const...");
             final String id = this.productManager.saveProduct(product);
             final Map<String, Object> data = ImmutableMap.<String, Object>builder()
                     .put("id", id)

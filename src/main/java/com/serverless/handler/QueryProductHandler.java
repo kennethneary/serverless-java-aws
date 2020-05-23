@@ -23,7 +23,7 @@ public class QueryProductHandler implements RequestHandler<APIGatewayProxyReques
     @Override
     public ApiGatewayResponse handleRequest(final APIGatewayProxyRequestEvent input, final Context context) {
         try {
-            LOG.error("QueryHandler...");
+            LOG.info("QueryHandler...");
             final String id = input.getPathParameters().get("id");
             final List<Product> products = this.productManager.queryProduct(id);
             final Response response = Response.builder().data(products).build();

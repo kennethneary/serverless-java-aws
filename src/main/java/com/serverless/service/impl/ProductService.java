@@ -9,8 +9,10 @@ import com.serverless.service.ObjectStorageManager;
 import com.serverless.service.ProductManager;
 import lombok.Getter;
 import lombok.Setter;
+import software.amazon.awssdk.utils.StringUtils;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,14 +27,24 @@ public class ProductService implements ProductManager {
     private DbManager<Product> db;
 
     public String saveProduct(final Product product) {
-        final  String id = UUID.randomUUID().toString();
+        final String id = UUID.randomUUID().toString();
+        final String timestamp = Instant.now().toString();
+
         product.setId(id);
+        product.setCreatedDateTime(timestamp);
+        product.setLastUpdatedDateTime(timestamp);
         this.db.save(product);
 
         final Content content = product.getContent();
-        this.osm.saveObject(Constants.BUCKET_NAME.getValue(), id, content);
-
+        if (this.isValidS3Body(content)) {
+            this.osm.saveObject(Constants.BUCKET_NAME.getValue(), id, content);
+        }
         return id;
+    }
+
+    private boolean isValidS3Body(Content content) {
+        return content != null && StringUtils.isNotBlank(content.getBase64Content())
+                && StringUtils.isNotBlank(content.getContentType());
     }
 
     public Product getProduct(final String id) throws IOException {
@@ -48,9 +60,15 @@ public class ProductService implements ProductManager {
     }
 
     public Product updateProduct(final String id, final Product product) {
+        final String timestamp = Instant.now().toString();
+
         product.setId(id);
+        product.setLastUpdatedDateTime(timestamp);
+
         final Content content = product.getContent();
-        this.osm.saveObject(Constants.BUCKET_NAME.getValue(), id, content);
+        if (this.isValidS3Body(content)) {
+            this.osm.saveObject(Constants.BUCKET_NAME.getValue(), id, content);
+        }
         return this.db.update(product);
     }
 

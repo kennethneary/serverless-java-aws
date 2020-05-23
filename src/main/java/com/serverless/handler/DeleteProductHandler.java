@@ -19,7 +19,7 @@ public class DeleteProductHandler implements RequestHandler<APIGatewayProxyReque
     @Override
     public ApiGatewayResponse handleRequest(final APIGatewayProxyRequestEvent input, final Context context) {
         try {
-            LOG.error("DeleteHandler...");
+            LOG.info("DeleteHandler...");
             final String id = input.getPathParameters().get("id");
             this.productManager.deleteProduct(id);
             return ApiGatewayResponse.builder()
