@@ -24,7 +24,7 @@ public class UpdateProductHandler extends BaseEventHandler {
         final Product product = Utils.getObject(event.getBody(), Product.class);
         this.productManager.updateProduct(id, product);
         return ApiGatewayResponse.builder()
-                .setStatusCode(201)
+                .setStatusCode(200)
                 .build();
     }
 }

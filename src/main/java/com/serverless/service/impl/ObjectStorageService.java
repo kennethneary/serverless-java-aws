@@ -6,6 +6,8 @@ import com.serverless.service.ObjectStorageManager;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -21,10 +23,14 @@ import java.nio.charset.StandardCharsets;
 @Setter
 public class ObjectStorageService implements ObjectStorageManager {
 
+    private static final Logger LOG = LogManager.getLogger(ObjectStorageService.class);
+
     @Inject
     private S3Client s3;
 
     public void saveObject(final String bucketName, final String objectKey, final Content content) {
+        LOG.info("saveObject - bucketName: " + bucketName + ", objectKey: " + objectKey + ", content: " + content);
+
         final String base64Content = content.getBase64Content();
         final String contentType = content.getContentType();
         final PutObjectRequest putBuilder = PutObjectRequest.builder()
@@ -38,6 +44,8 @@ public class ObjectStorageService implements ObjectStorageManager {
     }
 
     public Content getObject(final String bucketName, final String objectKey) throws IOException {
+        LOG.info("getObject - bucketName: " + bucketName + ", objectKey: " + objectKey);
+
         final GetObjectRequest putBuilder = GetObjectRequest.builder()
                 .bucket(bucketName)
                 .key(objectKey)
@@ -52,6 +60,8 @@ public class ObjectStorageService implements ObjectStorageManager {
     }
 
     public boolean deleteObject(final String bucketName, final String objectKey) {
+        LOG.info("deleteObject - bucketName: " + bucketName + ", objectKey: " + objectKey);
+
         final DeleteObjectRequest deleteBuilder = DeleteObjectRequest.builder()
                 .bucket(bucketName)
                 .key(objectKey)

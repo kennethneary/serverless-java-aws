@@ -2,12 +2,14 @@ package com.serverless.handler;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
+import com.serverless.exception.NotFoundDynamoDbItem;
 import com.serverless.model.ApiGatewayResponse;
 import com.serverless.model.Product;
 import com.serverless.model.Response;
 import com.serverless.service.ProductManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import software.amazon.awssdk.services.s3.model.S3Exception;
 
 import static com.serverless.config.AppModule.injector;
 

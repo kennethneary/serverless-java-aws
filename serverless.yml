@@ -28,6 +28,11 @@ provider:
         - Fn::GetAtt: ['ProductsDynamoDBTable', 'Arn' ]
     - Effect: Allow
       Action:
+        - s3:ListBucket
+      Resource:
+        - Fn::GetAtt: ['ProductsS3Bucket', 'Arn' ]
+    - Effect: Allow
+      Action:
         - s3:PutObject
         - s3:GetObject
         - s3:DeleteObject

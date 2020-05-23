@@ -2,14 +2,17 @@ package com.serverless.service.impl;
 
 import com.google.inject.Inject;
 import com.google.inject.name.Named;
+import com.serverless.exception.NotFoundDynamoDbItem;
 import com.serverless.service.DbManager;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import software.amazon.awssdk.enhanced.dynamodb.*;
 import software.amazon.awssdk.enhanced.dynamodb.model.*;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.serverless.config.AppModule.*;
@@ -17,6 +20,8 @@ import static com.serverless.config.AppModule.*;
 @Getter
 @Setter
 public class DynamoDbManager<T> implements DbManager<T> {
+
+    private static final Logger LOG = LogManager.getLogger(DynamoDbManager.class);
 
     @Inject
     private DynamoDbTable<T> table;
@@ -30,13 +35,21 @@ public class DynamoDbManager<T> implements DbManager<T> {
     private String primaryKey;
 
     public T getById(final String id) {
+        LOG.info("getById - id: " + id);
+
         final Key key = Key.builder()
                 .partitionValue(id)
                 .build();
-        return this.table.getItem(request -> request.key(key));
+        final T item =  this.table.getItem(request -> request.key(key));
+        if (Objects.isNull(item)) {
+            throw new NotFoundDynamoDbItem();
+        }
+        return item;
     }
 
     public void save(final T object) {
+        LOG.info("save - object: " + object);
+
         final Expression conditionExpression = Expression.builder()
                 .expression("attribute_not_exists(#primaryKey)")
                 .putExpressionName("#primaryKey", this.primaryKey)
@@ -50,7 +63,9 @@ public class DynamoDbManager<T> implements DbManager<T> {
         this.table.putItem(putItemEnhancedRequest);
     }
 
-    public boolean deleteById(final String id) {
+    public void deleteById(final String id) {
+        LOG.info("deleteById - id: " + id);
+
         final Key key = Key.builder()
                 .partitionValue(id)
                 .build();
@@ -66,10 +81,11 @@ public class DynamoDbManager<T> implements DbManager<T> {
                 .build();
 
         this.table.deleteItem(deleteItemEnhancedRequest);
-        return true;
     }
 
     public List<T> scan() {
+        LOG.info("scan");
+
         return this.table.scan()
                 .items()
                 .stream()
@@ -77,6 +93,8 @@ public class DynamoDbManager<T> implements DbManager<T> {
     }
 
     public List<T> query(final String id) {
+        LOG.info("query - id" + id);
+
         final Key key = Key.builder()
                 .partitionValue(id)
                 .build();
@@ -93,7 +111,10 @@ public class DynamoDbManager<T> implements DbManager<T> {
                 .collect(Collectors.toList());
     }
 
-    public T update(final T object) {
+    public void update(final T object) {
+        LOG.info("update - object" + object);
+        LOG.info("update - this.primaryKey" + this.primaryKey);
+
         final Expression conditionExpression = Expression.builder()
                 .expression("attribute_exists(#primaryKey)")
                 .putExpressionName("#primaryKey", this.primaryKey)
@@ -104,6 +125,6 @@ public class DynamoDbManager<T> implements DbManager<T> {
                 .conditionExpression(conditionExpression)
                 .build();
 
-        return this.table.updateItem(updateItemEnhancedRequest);
+        this.table.updateItem(updateItemEnhancedRequest);
     }
 }

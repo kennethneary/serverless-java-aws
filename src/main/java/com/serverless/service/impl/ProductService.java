@@ -9,6 +9,8 @@ import com.serverless.service.ObjectStorageManager;
 import com.serverless.service.ProductManager;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import software.amazon.awssdk.utils.StringUtils;
 
 import java.io.IOException;
@@ -20,6 +22,8 @@ import java.util.UUID;
 @Setter
 public class ProductService implements ProductManager {
 
+    private static final Logger LOG = LogManager.getLogger(ProductService.class);
+
     @Inject
     private ObjectStorageManager osm;
 
@@ -27,6 +31,8 @@ public class ProductService implements ProductManager {
     private DbManager<Product> db;
 
     public String saveProduct(final Product product) {
+        LOG.info("saveProduct - product: " + product);
+
         final String id = UUID.randomUUID().toString();
         final String timestamp = Instant.now().toString();
 
@@ -43,41 +49,60 @@ public class ProductService implements ProductManager {
     }
 
     public Product getProductById(final String id) throws IOException {
+        LOG.info("getProductById - id: " + id);
+
         final Product product = this.db.getById(id);
         final Content content = this.osm.getObject(Constants.BUCKET_NAME.getValue(), id);
         product.setContent(content);
         return product;
     }
 
-    public boolean deleteProductById(final String id) {
+    public void deleteProductById(final String id) {
+        LOG.info("deleteProductById - id: " + id);
+
         this.db.deleteById(id);
-        return this.osm.deleteObject(Constants.BUCKET_NAME.getValue(), id);
+        LOG.info("deleteById: " + id);
+
+        LOG.info("Constants.BUCKET_NAME.getValue(): " + Constants.BUCKET_NAME.getValue());
+        this.osm.deleteObject(Constants.BUCKET_NAME.getValue(), id);
+        LOG.info("deleteObject: " + id);
     }
 
-    public Product updateProduct(final String id, final Product product) {
+    public void updateProduct(final String id, final Product product) {
+        LOG.info("updateProduct - id: " + id + ", product: " + product);
+
         final String timestamp = Instant.now().toString();
 
         product.setId(id);
         product.setLastUpdatedDateTime(timestamp);
 
         final Content content = product.getContent();
+        final String bucketName = Constants.BUCKET_NAME.getValue();
         if (this.isValidS3Body(content)) {
-            this.osm.saveObject(Constants.BUCKET_NAME.getValue(), id, content);
+            this.osm.saveObject(bucketName, id, content);
+        } else {
+            this.osm.deleteObject(bucketName, id);
         }
-        return this.db.update(product);
+        this.db.update(product);
     }
 
     public List<Product> queryProduct(final String id) {
+        LOG.info("queryProduct - id: " + id);
+
         // do not return s3 content. get client to call specific item for performance
         return this.db.query(id);
     }
 
     public List<Product> getAllProducts() {
+        LOG.info("getAllProducts");
+
         // do not return s3 content. get client to call specific item for performance
         return this.db.scan();
     }
 
     private boolean isValidS3Body(Content content) {
+        LOG.info("isValidS3Body - content: " + content);
+
         return content != null && StringUtils.isNotBlank(content.getBase64Content())
                 && StringUtils.isNotBlank(content.getContentType());
     }

@@ -26,7 +26,7 @@ public class QueryProductHandler extends BaseEventHandler {
         final List<Product> products = this.productManager.queryProduct(id);
         final Response response = Response.builder().data(products).build();
         return ApiGatewayResponse.builder()
-                .setStatusCode(201)
+                .setStatusCode(200)
                 .setObjectBody(response)
                 .build();
     }

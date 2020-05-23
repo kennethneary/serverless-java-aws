@@ -8,8 +8,8 @@ import java.util.List;
 public interface ProductManager {
     public String saveProduct(final Product product);
     public Product getProductById(final String id) throws IOException;
-    public boolean deleteProductById(final String id);
-    public Product updateProduct(final String id, final Product product);
+    public void deleteProductById(final String id);
+    public void updateProduct(final String id, final Product product);
     public List<Product> queryProduct(final String id);
     public List<Product> getAllProducts();
 }
