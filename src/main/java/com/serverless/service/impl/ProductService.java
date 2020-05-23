@@ -42,20 +42,15 @@ public class ProductService implements ProductManager {
         return id;
     }
 
-    private boolean isValidS3Body(Content content) {
-        return content != null && StringUtils.isNotBlank(content.getBase64Content())
-                && StringUtils.isNotBlank(content.getContentType());
-    }
-
-    public Product getProduct(final String id) throws IOException {
+    public Product getProductById(final String id) throws IOException {
         final Product product = this.db.getById(id);
         final Content content = this.osm.getObject(Constants.BUCKET_NAME.getValue(), id);
         product.setContent(content);
         return product;
     }
 
-    public boolean deleteProduct(final String id) {
-        this.db.delete(id);
+    public boolean deleteProductById(final String id) {
+        this.db.deleteById(id);
         return this.osm.deleteObject(Constants.BUCKET_NAME.getValue(), id);
     }
 
@@ -80,5 +75,10 @@ public class ProductService implements ProductManager {
     public List<Product> getAllProducts() {
         // do not return s3 content. get client to call specific item for performance
         return this.db.scan();
+    }
+
+    private boolean isValidS3Body(Content content) {
+        return content != null && StringUtils.isNotBlank(content.getBase64Content())
+                && StringUtils.isNotBlank(content.getContentType());
     }
 }

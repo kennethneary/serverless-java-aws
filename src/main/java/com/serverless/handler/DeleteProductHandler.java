@@ -19,7 +19,7 @@ public class DeleteProductHandler extends BaseEventHandler {
     public ApiGatewayResponse processEvent(final APIGatewayProxyRequestEvent event, final Context context) {
         LOG.info("DeleteHandler...");
         final String id = event.getPathParameters().get("id");
-        this.productManager.deleteProduct(id);
+        this.productManager.deleteProductById(id);
         return ApiGatewayResponse.builder()
                 .setStatusCode(200)
                 .build();

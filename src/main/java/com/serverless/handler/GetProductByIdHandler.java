@@ -21,7 +21,7 @@ public class GetProductByIdHandler extends BaseEventHandler {
     public ApiGatewayResponse processEvent(final APIGatewayProxyRequestEvent event, final Context context) throws Exception {
         LOG.info("GetByIdHandler...");
         final String id = event.getPathParameters().get("id");
-        final Product product = this.productManager.getProduct(id);
+        final Product product = this.productManager.getProductById(id);
         final Response response = Response.builder().data(product).build();
         return ApiGatewayResponse.builder()
                 .setStatusCode(200)

@@ -50,7 +50,7 @@ public class DynamoDbManager<T> implements DbManager<T> {
         this.table.putItem(putItemEnhancedRequest);
     }
 
-    public boolean delete(final String id) {
+    public boolean deleteById(final String id) {
         final Key key = Key.builder()
                 .partitionValue(id)
                 .build();
