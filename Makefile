@@ -12,3 +12,6 @@ deploy: build
 install: clean
 	npm install
 	mvn install
+
+delete:
+	serverless remove
