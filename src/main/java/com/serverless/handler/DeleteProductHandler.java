@@ -6,6 +6,7 @@ import com.serverless.model.ApiGatewayResponse;
 import com.serverless.service.ProductManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import software.amazon.awssdk.services.dynamodb.model.ConditionalCheckFailedException;
 
 import static com.serverless.config.AppModule.injector;
 
@@ -18,11 +19,17 @@ public class DeleteProductHandler extends BaseEventHandler {
     @Override
     public ApiGatewayResponse processEvent(final APIGatewayProxyRequestEvent event, final Context context) {
         LOG.info("DeleteHandler...");
-        final String id = event.getPathParameters().get("id");
-        this.productManager.deleteProductById(id);
-        return ApiGatewayResponse.builder()
-                .setStatusCode(200)
-                .build();
+
+        try {
+            final String id = event.getPathParameters().get("id");
+            this.productManager.deleteProductById(id);
+            return ApiGatewayResponse.builder()
+                    .setStatusCode(200)
+                    .build();
+        } catch (ConditionalCheckFailedException ccfe) {
+            LOG.info("DeleteHandler... ConditionalCheckFailedException");
+            return ApiGatewayResponse.builder().setStatusCode(404).build();
+        }
     }
 }
 

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbIgnore;
 import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbSecondaryPartitionKey;
 
 @DynamoDbBean
 @Builder
@@ -33,6 +34,7 @@ public class Product {
         this.id = id;
     }
 
+    @DynamoDbSecondaryPartitionKey(indexNames = "nameIndex")
     public String getName() {
         return name;
     }

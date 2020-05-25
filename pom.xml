@@ -16,7 +16,7 @@
         <guice.version>4.2.3</guice.version>
         <commons.io.version>2.6</commons.io.version>
 
-        <aws.bom.version>2.13.17</aws.bom.version>
+        <aws.bom.version>2.13.22</aws.bom.version>
         <aws.lambda.java.core.version>1.2.1</aws.lambda.java.core.version>
         <aws.lambda.java.events.version>2.2.8</aws.lambda.java.events.version>
         <aws.lambda.java.log4j2.version>1.1.0</aws.lambda.java.log4j2.version>
@@ -87,11 +87,6 @@
             <artifactId>guice</artifactId>
             <version>${guice.version}</version>
         </dependency>
-        <!--        <dependency>-->
-        <!--            <groupId>com.google.dagger</groupId>-->
-        <!--            <artifactId>dagger</artifactId>-->
-        <!--            <version>2.26</version>-->
-        <!--        </dependency>-->
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>

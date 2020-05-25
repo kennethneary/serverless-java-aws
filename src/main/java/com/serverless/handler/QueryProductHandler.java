@@ -22,8 +22,8 @@ public class QueryProductHandler extends BaseEventHandler {
     @Override
     public ApiGatewayResponse processEvent(final APIGatewayProxyRequestEvent event, final Context context) {
         LOG.info("QueryHandler...");
-        final String id = event.getPathParameters().get("id");
-        final List<Product> products = this.productManager.queryProduct(id);
+        final String name = event.getQueryStringParameters().get("name");
+        final List<Product> products = this.productManager.queryProductByName(name);
         final Response response = Response.builder().data(products).build();
         return ApiGatewayResponse.builder()
                 .setStatusCode(200)

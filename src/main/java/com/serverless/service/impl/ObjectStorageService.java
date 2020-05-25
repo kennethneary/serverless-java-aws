@@ -28,6 +28,7 @@ public class ObjectStorageService implements ObjectStorageManager {
     @Inject
     private S3Client s3;
 
+    @Override
     public void saveObject(final String bucketName, final String objectKey, final Content content) {
         LOG.info("saveObject - bucketName: " + bucketName + ", objectKey: " + objectKey + ", content: " + content);
 
@@ -43,6 +44,7 @@ public class ObjectStorageService implements ObjectStorageManager {
         this.s3.putObject(putBuilder, requestBody);
     }
 
+    @Override
     public Content getObject(final String bucketName, final String objectKey) throws IOException {
         LOG.info("getObject - bucketName: " + bucketName + ", objectKey: " + objectKey);
 
@@ -59,6 +61,7 @@ public class ObjectStorageService implements ObjectStorageManager {
                 .build();
     }
 
+    @Override
     public boolean deleteObject(final String bucketName, final String objectKey) {
         LOG.info("deleteObject - bucketName: " + bucketName + ", objectKey: " + objectKey);
 

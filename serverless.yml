@@ -4,6 +4,10 @@ service:
 custom:
   productsTableName: '${self:service.name}-${self:provider.stage}-table'
   productsBucketName: '${self:service.name}-${self:provider.stage}-table'
+  prune:
+    automatic: true
+    includeLayers: true
+    number: 1
 
 provider:
   name: aws
@@ -28,6 +32,15 @@ provider:
         - Fn::GetAtt: ['ProductsDynamoDBTable', 'Arn' ]
     - Effect: Allow
       Action:
+        - dynamodb:Query
+      Resource:
+        - Fn::Sub:
+            - '#{TABLE_ARN}/index/*'
+            - TABLE_ARN:
+                Fn::GetAtt: ['ProductsDynamoDBTable', 'Arn' ]
+
+    - Effect: Allow
+      Action:
         - s3:ListBucket
       Resource:
         - Fn::GetAtt: ['ProductsS3Bucket', 'Arn' ]
@@ -41,13 +54,16 @@ provider:
           - '#{BUCKET}/*'
           - BUCKET:
               Fn::GetAtt: ['ProductsS3Bucket', 'Arn' ]
+
   environment:
     PRODUCTS_TABLE_NAME: ${self:custom.productsTableName}
     PRODUCTS_TABLE_PRIMARY_ID: id
+    PRODUCTS_TABLE_SECONDARY_INDEX: nameIndex
     PRODUCTS_BUCKET_NAME: ${self:custom.productsBucketName}
 
 plugins:
   - serverless-cloudformation-sub-variables
+  - serverless-prune-plugin
 
 package:
   artifact: 'target/${self:service.name}-${self:provider.stage}.jar'
@@ -62,17 +78,17 @@ functions:
           cors: true
           private: true
 
-#  queryProduct:
-#    handler: com.serverless.handler.QueryProductHandler
-#    events:
-#      - http:
-#          path: /products/{id}
-#          method: get
-#          cors: true
-#          private: true
+  queryProductByName:
+    handler: com.serverless.handler.QueryProductHandler
+    events:
+      - http:
+          path: /products/query
+          method: get
+          cors: true
+          private: true
 
   getProduct:
-    handler: com.serverless.handler.GetProductByIdHandler
+    handler: com.serverless.handler.GetProductHandler
     events:
       - http:
           path: /products/{id}

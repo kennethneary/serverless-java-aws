@@ -27,7 +27,6 @@ public class AppModule extends AbstractModule {
 
     public static final Injector injector = Guice.createInjector(new AppModule());
     public static final String DB_CLASS_TYPE = "classType";
-    public static final String DB_PRIMARY_KEY = "primaryKey";
 
     @Override
     protected void configure() {
@@ -37,7 +36,6 @@ public class AppModule extends AbstractModule {
         bind(ObjectStorageManager.class).to(ObjectStorageService.class);
         bind(S3Client.class).toInstance(S3Client.create());
 
-        bind(String.class).annotatedWith(Names.named(DB_PRIMARY_KEY)).toInstance(Constants.TABLE_PRIMARY_ID.getValue());
         bind(new TypeLiteral<Class<Product>>(){}).annotatedWith(Names.named(DB_CLASS_TYPE)).toInstance(Product.class);
         bind(new TypeLiteral<DynamoDbTable<Product>>(){}).toInstance(createDynamoDbTableClient(Product.class));
         bind(new TypeLiteral<DbManager<Product>>(){}).to(new TypeLiteral<DynamoDbManager<Product>>(){});
@@ -46,7 +44,7 @@ public class AppModule extends AbstractModule {
     private static <T> DynamoDbTable<T> createDynamoDbTableClient(final Class<T> classType) {
         final DynamoDbEnhancedClient ddbEnhancedClient = DynamoDbEnhancedClient.create();
         final BeanTableSchema<T> beanTableSchema = TableSchema.fromBean(classType);
-        final DynamoDbTable<T> dynamoDbTable = ddbEnhancedClient.table(Constants.TABLE_NAME.getValue(), beanTableSchema);
+        final DynamoDbTable<T> dynamoDbTable = ddbEnhancedClient.table(Constants.PRODUCTS_TABLE_NAME.getValue(), beanTableSchema);
         return dynamoDbTable;
     }
 }

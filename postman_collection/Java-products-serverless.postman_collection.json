@@ -1,0 +1,212 @@
+{
+	"info": {
+		"_postman_id": "7443af33-f822-4b0f-a87a-725b606a8995",
+		"name": "Java-products-serverless",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Update product",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "{{x-api-key}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"id\",\n    \"name\": \"john3\",\n    \"price\": \"price\",\n    \"description\": \"description\",\n    \"createdDateTime\": \"createdDateTime\",\n    \"lastUpdatedDateTime\": \"lastUpdatedDateTime\",\n    \"content\": {\n        \"base64Content\": \"base64Content\",\n        \"contentType\": \"contentType\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{products_url}}/{{stage}}/products",
+					"host": [
+						"{{products_url}}"
+					],
+					"path": [
+						"{{stage}}",
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get all products",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "{{x-api-key}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{products_url}}/{{stage}}/products",
+					"host": [
+						"{{products_url}}"
+					],
+					"path": [
+						"{{stage}}",
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get product by Id",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "{{x-api-key}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{products_url}}/{{stage}}/products/:id",
+					"host": [
+						"{{products_url}}"
+					],
+					"path": [
+						"{{stage}}",
+						"products",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update product",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "{{x-api-key}}",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"id\",\n    \"name\": \"john ooooo\",\n    \"price\": \"price\",\n    \"description\": \"description\",\n    \"createdDateTime\": \"createdDateTime\",\n    \"lastUpdatedDateTime\": \"lastUpdatedDateTime\",\n    \"content\": {\n        \"base64Content\": \"base64Content jjj\",\n        \"contentType\": \"contentType\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{products_url}}/{{stage}}/products/:id",
+					"host": [
+						"{{products_url}}"
+					],
+					"path": [
+						"{{stage}}",
+						"products",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete product by Id",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "{{x-api-key}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{products_url}}/{{stage}}/products/:id",
+					"host": [
+						"{{products_url}}"
+					],
+					"path": [
+						"{{stage}}",
+						"products",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Query Name",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "x-api-key",
+						"value": "{{x-api-key}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{products_url}}/{{stage}}/products/query?name=",
+					"host": [
+						"{{products_url}}"
+					],
+					"path": [
+						"{{stage}}",
+						"products",
+						"query"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}

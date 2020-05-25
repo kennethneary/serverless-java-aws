@@ -10,6 +10,6 @@ public interface ProductManager {
     public Product getProductById(final String id) throws IOException;
     public void deleteProductById(final String id);
     public void updateProduct(final String id, final Product product);
-    public List<Product> queryProduct(final String id);
+    public List<Product> queryProductByName(final String name);
     public List<Product> getAllProducts();
 }

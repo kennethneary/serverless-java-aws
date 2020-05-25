@@ -3,7 +3,6 @@ package com.serverless.handler;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
-import com.serverless.exception.NotFoundDynamoDbItem;
 import com.serverless.model.ApiGatewayResponse;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.logging.log4j.LogManager;
@@ -28,10 +27,6 @@ public abstract class BaseEventHandler implements RequestHandler<APIGatewayProxy
                 return ApiGatewayResponse.builder().setStatusCode(404).build();
             }
             throw s3e;
-        }
-        catch (NotFoundDynamoDbItem nfdi) {
-            LOG.error("NotFoundDynamoDbItem", nfdi);
-            return ApiGatewayResponse.builder().setStatusCode(404).build();
         }
         catch (Exception ex) {
             LOG.error("Exception: " + ex);
