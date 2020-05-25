@@ -8,6 +8,7 @@ import com.serverless.model.Response;
 import com.serverless.service.ProductManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import software.amazon.awssdk.utils.StringUtils;
 
 import java.util.List;
 
@@ -23,6 +24,10 @@ public class QueryProductHandler extends BaseEventHandler {
     public ApiGatewayResponse processEvent(final APIGatewayProxyRequestEvent event, final Context context) {
         LOG.info("QueryHandler...");
         final String name = event.getQueryStringParameters().get("name");
+        
+        if (StringUtils.isBlank(name)) {
+            return ApiGatewayResponse.builder().setStatusCode(400).build();
+        }
         final List<Product> products = this.productManager.queryProductByName(name);
         final Response response = Response.builder().data(products).build();
         return ApiGatewayResponse.builder()
