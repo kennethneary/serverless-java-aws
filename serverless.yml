@@ -3,7 +3,7 @@ service:
 
 custom:
   productsTableName: '${self:service.name}-${self:provider.stage}-table'
-  productsBucketName: '${self:service.name}-${self:provider.stage}-table'
+  productsBucketName: '${self:service.name}-${self:provider.stage}-bucket'
   prune:
     automatic: true
     includeLayers: true
@@ -17,8 +17,6 @@ provider:
   apiKeys:
     - ${self:service.name}-${self:provider.stage}
   timeout: 29
-  #  deploymentBucket:
-  #    name: ${file(./config.json:deploymentBucket)}
   iamRoleStatements:
     - Effect: Allow
       Action:
