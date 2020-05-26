@@ -18,7 +18,7 @@ public class Utils {
         try {
             return getObjectMapper().readValue(json, classType);
         } catch(IOException e) {
-            LOG.error("Marshalling error: " + e);
+            LOG.error("Marshalling error: {}", e);
         }
         return null;
     }

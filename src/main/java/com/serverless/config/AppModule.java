@@ -10,7 +10,7 @@ import com.serverless.model.Product;
 import com.serverless.service.DbManager;
 import com.serverless.service.ObjectStorageManager;
 import com.serverless.service.ProductManager;
-import com.serverless.service.impl.DynamoDbManager;
+import com.serverless.service.impl.DynamoDbService;
 import com.serverless.service.impl.ObjectStorageService;
 import com.serverless.service.impl.ProductService;
 import org.apache.logging.log4j.LogManager;
@@ -38,7 +38,7 @@ public class AppModule extends AbstractModule {
 
         bind(new TypeLiteral<Class<Product>>(){}).annotatedWith(Names.named(DB_CLASS_TYPE)).toInstance(Product.class);
         bind(new TypeLiteral<DynamoDbTable<Product>>(){}).toInstance(createDynamoDbTableClient(Product.class));
-        bind(new TypeLiteral<DbManager<Product>>(){}).to(new TypeLiteral<DynamoDbManager<Product>>(){});
+        bind(new TypeLiteral<DbManager<Product>>(){}).to(new TypeLiteral<DynamoDbService<Product>>(){});
     }
 
     private static <T> DynamoDbTable<T> createDynamoDbTableClient(final Class<T> classType) {

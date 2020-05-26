@@ -30,7 +30,7 @@ public class ObjectStorageService implements ObjectStorageManager {
 
     @Override
     public void saveObject(final String bucketName, final String objectKey, final Content content) {
-        LOG.info("saveObject - bucketName: " + bucketName + ", objectKey: " + objectKey + ", content: " + content);
+        LOG.info("saveObject - bucketName: {}, objectKey: {}, content: {}", bucketName, objectKey, content);
 
         final String base64Content = content.getBase64Content();
         final String contentType = content.getContentType();
@@ -46,7 +46,7 @@ public class ObjectStorageService implements ObjectStorageManager {
 
     @Override
     public Content getObject(final String bucketName, final String objectKey) throws IOException {
-        LOG.info("getObject - bucketName: " + bucketName + ", objectKey: " + objectKey);
+        LOG.info("getObject - bucketName: {}, objectKey: {}", bucketName, objectKey);
 
         final GetObjectRequest putBuilder = GetObjectRequest.builder()
                 .bucket(bucketName)
@@ -63,7 +63,7 @@ public class ObjectStorageService implements ObjectStorageManager {
 
     @Override
     public boolean deleteObject(final String bucketName, final String objectKey) {
-        LOG.info("deleteObject - bucketName: " + bucketName + ", objectKey: " + objectKey);
+        LOG.info("deleteObject - bucketName: {}, objectKey: {}", bucketName, objectKey);
 
         final DeleteObjectRequest deleteBuilder = DeleteObjectRequest.builder()
                 .bucket(bucketName)

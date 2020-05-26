@@ -34,7 +34,7 @@ public class ProductService implements ProductManager {
 
     @Override
     public String saveProduct(final Product product) {
-        LOG.info("saveProduct - product: " + product);
+        LOG.info("saveProduct - product: {}", product);
 
         final String id = UUID.randomUUID().toString();
         final String timestamp = Instant.now().toString();
@@ -53,18 +53,22 @@ public class ProductService implements ProductManager {
 
     @Override
     public Product getProductById(final String id) throws IOException {
-        LOG.info("getProductById - id: " + id);
+        LOG.info("getProductById - id: {}", id);
 
         final Product product = this.db.getById(id);
-        final Content content = this.osm.getObject(PRODUCTS_BUCKET_NAME.getValue(), id);
-        product.setContent(content);
+        try {
+            final Content content = this.osm.getObject(PRODUCTS_BUCKET_NAME.getValue(), id);
+            product.setContent(content);
+        } catch (S3Exception s3e) {
+            LOG.error("S3Exception: {}", s3e);
+            if (s3e.statusCode() != 404) throw s3e;
+        }
         return product;
     }
 
     @Override
     public void deleteProductById(final String id) {
-        LOG.info("deleteProductById - id: " + id);
-        LOG.info("PRODUCTS_TABLE_PRIMARY_ID.getValue() : " + PRODUCTS_TABLE_PRIMARY_ID.getValue());
+        LOG.info("deleteProductById - id: {}", id);
 
         this.db.deleteById(PRODUCTS_TABLE_PRIMARY_ID.getValue(), id);
 
@@ -72,14 +76,14 @@ public class ProductService implements ProductManager {
         try {
             this.osm.deleteObject(PRODUCTS_BUCKET_NAME.getValue(), id);
         } catch (S3Exception s3e) {
-            LOG.error("S3Exception", s3e);
+            LOG.error("S3Exception: {}", s3e);
             if (s3e.statusCode() != 404) throw s3e;
         }
     }
 
     @Override
     public void updateProduct(final String id, final Product product) {
-        LOG.info("updateProduct - id: " + id + ", product: " + product);
+        LOG.info("updateProduct - id: {}, product: {}", id, product);
 
         product.setId(id);
         this.db.update(PRODUCTS_TABLE_PRIMARY_ID.getValue(), product);
@@ -95,7 +99,7 @@ public class ProductService implements ProductManager {
 
     @Override
     public List<Product> queryProductByName(final String name) {
-        LOG.info("queryProduct - name: " + name);
+        LOG.info("queryProduct - name: {}", name);
 
         // do not return s3 content. get client to call specific item for performance
         return this.db.queryGSI(PRODUCTS_TABLE_SECONDARY_INDEX.getValue(), name);
@@ -110,7 +114,7 @@ public class ProductService implements ProductManager {
     }
 
     private boolean isValidS3Body(Content content) {
-        LOG.info("isValidS3Body - content: " + content);
+        LOG.info("isValidS3Body - content: {}", content);
 
         return content != null && StringUtils.isNotBlank(content.getBase64Content())
                 && StringUtils.isNotBlank(content.getContentType());

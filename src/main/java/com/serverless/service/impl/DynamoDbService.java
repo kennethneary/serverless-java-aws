@@ -20,9 +20,9 @@ import static com.serverless.config.AppModule.DB_CLASS_TYPE;
 
 @Getter
 @Setter
-public class DynamoDbManager<T> implements DbManager<T> {
+public class DynamoDbService<T> implements DbManager<T> {
 
-    private static final Logger LOG = LogManager.getLogger(DynamoDbManager.class);
+    private static final Logger LOG = LogManager.getLogger(DynamoDbService.class);
 
     @Inject
     private DynamoDbTable<T> table;
@@ -33,7 +33,7 @@ public class DynamoDbManager<T> implements DbManager<T> {
 
     @Override
     public T getById(final String id) {
-        LOG.info("getById - id: " + id);
+        LOG.info("getById - id: {}", id);
 
         final Key key = Key.builder()
                 .partitionValue(id)
@@ -43,7 +43,7 @@ public class DynamoDbManager<T> implements DbManager<T> {
 
     @Override
     public void save(final String partitionKey, final T object) {
-        LOG.info("save - partitionKey: " + partitionKey + ", object: " + object);
+        LOG.info("save - partitionKey: {}, object: {}", partitionKey, object);
 
         final Expression conditionExpression = Expression.builder()
                 .expression("attribute_not_exists(#primaryKey)")
@@ -60,7 +60,7 @@ public class DynamoDbManager<T> implements DbManager<T> {
 
     @Override
     public void deleteById(final String partitionKey, final String id) {
-        LOG.info("deleteById - partitionKey: " + partitionKey + ", id: " + id);
+        LOG.info("deleteById - partitionKey: {}, id: {}", partitionKey, id);
 
         final Key key = Key.builder()
                 .partitionValue(id)
@@ -94,7 +94,7 @@ public class DynamoDbManager<T> implements DbManager<T> {
 
     @Override
     public List<T> query(final String id) {
-        LOG.info("query - id" + id);
+        LOG.info("query - id: {}", id);
 
         final Key key = Key.builder()
                 .partitionValue(id)
@@ -114,7 +114,7 @@ public class DynamoDbManager<T> implements DbManager<T> {
 
     @Override
     public List<T> queryGSI(final String indexName, final String id) {
-        LOG.info("query - id" + id);
+        LOG.info("query - id: {}" + id);
 
         final Key key = Key.builder()
                 .partitionValue(id)
@@ -135,7 +135,7 @@ public class DynamoDbManager<T> implements DbManager<T> {
 
     @Override
     public void update(final String partitionKey, final T object) {
-        LOG.info("update - partitionKey: " + partitionKey + ", object: " + object);
+        LOG.info("update - partitionKey: {}, object: {}", partitionKey, object);
 
         final Expression conditionExpression = Expression.builder()
                 .expression("attribute_exists(#primaryKey)")

@@ -19,18 +19,18 @@ public abstract class BaseEventHandler implements RequestHandler<APIGatewayProxy
     public ApiGatewayResponse handleRequest(final APIGatewayProxyRequestEvent event, final Context context) {
         try {
             LOG.error("Processing Event...");
-            return processEvent(event, context);
+            return this.processEvent(event, context);
         }
         catch (S3Exception s3e) {
-            LOG.error("S3Exception", s3e);
+            LOG.error("S3Exception {}", s3e);
             if (s3e.statusCode() == 404) {
                 return ApiGatewayResponse.builder().setStatusCode(404).build();
             }
             throw s3e;
         }
         catch (Exception ex) {
-            LOG.error("Exception: " + ex);
-            LOG.error("Exception trace: " + ExceptionUtils.getStackTrace(ex));
+            LOG.error("Exception: {}", ex);
+            LOG.error("Exception trace: {}", ExceptionUtils.getStackTrace(ex));
             return ApiGatewayResponse.builder()
                     .setStatusCode(500)
                     .build();
