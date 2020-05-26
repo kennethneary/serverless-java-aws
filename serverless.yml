@@ -17,6 +17,8 @@ provider:
   apiKeys:
     - ${self:service.name}-${self:provider.stage}
   timeout: 29
+#  deploymentBucket:
+#    name: ${file(./config.json:deploymentBucket)}
   iamRoleStatements:
     - Effect: Allow
       Action:
