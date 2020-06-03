@@ -1,22 +1,12 @@
 {
   "name": "serverless-java-aws",
   "version": "1.0.0",
-  "description": "",
   "private": true,
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/kennethneary/serverless-java-aws.git"
   },
-  "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/kennethneary/serverless-java-aws/issues"
-  },
-  "homepage": "https://github.com/kennethneary/serverless-java-aws#readme",
   "dependencies": {},
   "devDependencies": {
     "serverless-cloudformation-sub-variables": "^0.2.1",
