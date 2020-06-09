@@ -6,7 +6,7 @@
 	},
 	"item": [
 		{
-			"name": "Update product",
+			"name": "Create product",
 			"request": {
 				"method": "POST",
 				"header": [
